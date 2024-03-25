@@ -1,6 +1,9 @@
 import UserProjectCard from "./UserProjectCard";
 import UserAchievement from "./UserAchievement";
+// import { useSelector } from "react-redux";
+
 export default function UserOverview() {
+    // const { user } = useSelector((state) => state.profile)
     return (
         <div className="w-11/12 max-w-5xl mx-auto mt-10">
             <div className="max-w-max flex flex-col">
