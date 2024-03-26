@@ -1,13 +1,19 @@
-import { React, useState } from 'react';
-import { useDispatch } from "react-redux"
+import { React, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { createProject } from '../services/operations/projectAPI';
 // import { setToken } from '../slices/authSlice';
 import { setProjectData } from '../slices/projectSlice';
+
 export default function CreateProjectUtil() {
 
+    const token = useSelector((state)=> state.auth);
+    useEffect(()=>{
+        console.log(token);
+    },[token])
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const [loading, setLoading] = useState(false)
     const [projectFormData, setProjectFormData] = useState({
         title: "",
         description: "",
@@ -47,11 +53,9 @@ export default function CreateProjectUtil() {
 
     const handleOnSubmit = (e) => {
         e.preventDefault()
-
-        console.log("***************** projectFiles",projectFormData);
-
-        const {projectTitle, projectDescription, projectTags, projectFiles,} = projectFormData
-
+        
+        const { title, description, tags, projectFiles } = projectFormData;
+        
         // Dispatching actions to set project data
         dispatch(setProjectData({
             title,
@@ -59,13 +63,14 @@ export default function CreateProjectUtil() {
             tags,
             projectFiles: projectFiles ? projectFiles.name : null // Store file name as reference
         }));
-
+    
+        setLoading(!loading);
         // Send data for creation of project
-        dispatch(createProject(projectTitle, projectDescription, projectTags, projectFiles, navigate))
-
+        dispatch(createProject(title, description, tags, projectFiles, token, navigate));
+        setLoading(!loading);
         // Reset
         clearForm();
-    }
+    }    
 
     return (
         <div>
@@ -129,7 +134,7 @@ export default function CreateProjectUtil() {
                     </label>
                     <label>
                         <p className="mb-1 text-[0.875rem] text-left leading-[1.375rem] text-richblack-8">
-                            Upload File <sup className="text-red-500 font-bold text-sm">*</sup>
+                            Upload Project Image <sup className="text-red-500 font-bold text-sm">*</sup>
                         </p>
                         <input
                             required

@@ -14,7 +14,7 @@ import VerifyEmail from './pages/verifyEmail';
 import CreateProjectPage from './pages/CreateProjectPage';
 import PublicRoute from './routes/PublicRoute';
 import PrivateRoute from './routes/PrivateRoute';
-import LogoutOnWindowExit from './components/LogoutOnWindowExit';
+// import LogoutOnWindowExit from './components/LogoutOnWindowExit';
 
 function App() {
   const { user } = useSelector((state) => state.profile)
@@ -32,7 +32,7 @@ function App() {
           <Route path='/projects' element={<Outlet />} >
             <Route path='/projects' element={<PrivateRoute><Projects /></PrivateRoute>} />
             <Route path='/projects/create' element={<PrivateRoute><CreateProjectPage /></PrivateRoute>} />
-            <Route path='/projects/:id' element={<ProjectPage />} />
+            <Route path={'/projects/:project'} element={<ProjectPage />} />
             <Route path='/projects/:id/edit' element={<PrivateRoute><EditProjectPage /></PrivateRoute>} />
             <Route path='/projects/:id/delete' element={<PrivateRoute></PrivateRoute>} />
           </Route>
@@ -45,7 +45,7 @@ function App() {
           <Route path='*' element={<div className='text-4xl mt-16 tracking-wider text-blue-600'>404 Not Found</div>} />
         </Route>
       </Routes>
-      <LogoutOnWindowExit />
+      {/* <LogoutOnWindowExit /> */}
     </div>
   );
 }

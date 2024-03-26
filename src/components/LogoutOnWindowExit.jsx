@@ -1,24 +1,15 @@
-import { useDispatch } from 'react-redux';
-import { logout } from '../services/operations/authAPI'; 
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { logoutOnExit } from '../services/operations/authAPI'// Import your logout action
 
-const LogoutOnWindowExit = () => {
+function LogoutOnClose() {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const handleWindowUnload = () => {
-      // Dispatch the logout action here
-      dispatch(logout());
-    };
-    window.addEventListener('beforeunload', handleWindowUnload);
-
-    // Remove event listener when the component unmounts
-    return () => {
-      window.removeEventListener('beforeunload', handleWindowUnload);
-    };
+  useEffect(()=>{
+    dispatch(logoutOnExit());
   }, [dispatch]);
 
   return null;
-};
+}
 
-export default LogoutOnWindowExit;
+export default LogoutOnClose;

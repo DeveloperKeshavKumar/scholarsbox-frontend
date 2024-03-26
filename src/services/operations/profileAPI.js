@@ -34,22 +34,22 @@ export function getUserDetails(token, navigate) {
   }
 }
 
-export async function getUserEnrolledCourses(token) {
+export async function getUserProjects(token) {
   const toastId = toast.loading("Loading...")
   let result = []
   try {
-    console.log("BEFORE Calling BACKEND API FOR ENROLLED COURSES");
+    console.log("BEFORE Calling BACKEND API FOR USER PROJECTS");
     const response = await apiConnector(
       "GET",
-      GET_USER_ENROLLED_COURSES_API,
+      GET_USER_PROJECTS_API,
       null,
       {
         Authorization: `Bearer ${token}`,
       }
     )
-    console.log("AFTER Calling BACKEND API FOR ENROLLED COURSES");
+    console.log("AFTER Calling BACKEND API FOR USER PROJECTS");
     // console.log(
-    //   "GET_USER_ENROLLED_COURSES_API API RESPONSE............",
+    //   "GET_USER_PROJECTS_API API RESPONSE............",
     //   response
     // )
 
@@ -58,8 +58,8 @@ export async function getUserEnrolledCourses(token) {
     }
     result = response.data.data
   } catch (error) {
-    console.log("GET_USER_ENROLLED_COURSES_API API ERROR............", error)
-    toast.error("Could Not Get Enrolled Courses")
+    console.log("GET_USER_PROJECTS_API API ERROR............", error)
+    toast.error("Could Not Get Your Projects")
   }
   toast.dismiss(toastId)
   return result

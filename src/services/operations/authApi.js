@@ -108,7 +108,14 @@ export function logout(navigate) {
   }
 }
 
-
+export function logoutOnExit() {
+  return (dispatch) => {
+    dispatch(setToken(null));
+    dispatch(setUser(null));
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  };
+}
 
 export function getPasswordResetToken(email, setEmailSent) {
   return async (dispatch) => {

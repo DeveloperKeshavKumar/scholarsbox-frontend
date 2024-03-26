@@ -1,9 +1,11 @@
 import UserProjectCard from "./UserProjectCard";
 import UserAchievement from "./UserAchievement";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function UserOverview() {
-    // const { user } = useSelector((state) => state.profile)
+    const { user } = useSelector((state) => state.profile)
+    const projects = user.projects
     return (
         <div className="w-11/12 max-w-5xl mx-auto mt-10">
             <div className="max-w-max flex flex-col">
@@ -35,10 +37,14 @@ export default function UserOverview() {
             </div>
             <div className="mt-5">
                 {/* display project card using map at api data */}
-                <UserProjectCard />
-                <UserProjectCard />
-                <UserProjectCard />
-                <UserProjectCard />
+                {
+                    projects.map((projectId,index)=>(
+                        <Link to={"/projects/"+projectId}>
+
+                        <UserProjectCard key={index} projectId={projectId}/>
+                        </Link>
+                    ))
+                }
             </div>
 
             <div className="max-w-max flex flex-col mt-10">
