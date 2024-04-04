@@ -1,9 +1,11 @@
 import { toast } from "react-hot-toast"
 import { apiConnector } from "../apiConnector"
-import { projectEndpoints } from "../apis"
+import { projectEndpoints, endpoints } from "../apis"
 import { setLoading } from "../../slices/projectSlice"
+import { setUser } from "../../slices/profileSlice"
 
 const { CREATE_PROJECT_API, GET_USER_PROJECTS_API } = projectEndpoints
+const {USER_API} = endpoints;
 
 
 export function createProject(projectTitle, projectDescription, projectTags, projectFile, token, navigate) {
@@ -17,7 +19,7 @@ export function createProject(projectTitle, projectDescription, projectTags, pro
             formData.append('tags', JSON.stringify(projectTags)); // Convert to JSON string
             formData.append('projectFiles', projectFile); // Append the file
 
-            const response = await apiConnector("POST", CREATE_PROJECT_API, formData, {
+            let response = await apiConnector("POST", CREATE_PROJECT_API, formData, {
                 'Content-Type': 'multipart/form-data', // Set content type for FormData
                 Authorization: `Bearer ${token.token}`,
             });
@@ -29,6 +31,11 @@ export function createProject(projectTitle, projectDescription, projectTags, pro
                 throw new Error(response.data.message);
             }
             toast.success("Project created successfully");
+            response = await apiConnector("GET", USER_API, null, {
+                Authorization : `Bearer ${token.token}`
+            });
+            localStorage.setItem("user", JSON.stringify(response.data.user))
+            dispatch(setUser({ ...response.data.user}))
             navigate(`/projects/${projectId}`);
         } catch (error) {
             console.log("CREATE PROJECT API ERROR............", error);
@@ -43,8 +50,8 @@ export function createProject(projectTitle, projectDescription, projectTags, pro
 export async function getProjectByID(token, projectID) {
     try {
         console.log(token.token, projectID)
-        console.log( GET_USER_PROJECTS_API);
-        const response = await apiConnector("GET", GET_USER_PROJECTS_API+"/"+projectID, null, {
+        console.log(GET_USER_PROJECTS_API);
+        const response = await apiConnector("GET", GET_USER_PROJECTS_API + "/" + projectID, null, {
             Authorization: `Bearer ${token.token}`
         });
 
@@ -61,16 +68,49 @@ export async function getProjectByID(token, projectID) {
     }
 }
 
-export async function likeOrDislike(token, projectID, like) {
+export async function getLikes(token, projectID) {
     try {
-        const url = `${GET_USER_PROJECTS_API}/${projectID}/${like ? 'like' : 'dislike'}`;
+        console.log("GEtting Likes")
+        const url = `${GET_USER_PROJECTS_API}/${projectID}/like`;
+        const response = await apiConnector("GET", url, null, {
+            Authorization: `Bearer ${token.token}`
+        });
+
+        console.log("LIKES RESPONSE ",response)
+
+        console.log("likes Came from server")
+        return response.data.data;
+
+    } catch (err) {
+        console.error(err)
+
+    }
+}
+
+export async function likeProject(token, projectID) {
+    try {
+        const url = `${GET_USER_PROJECTS_API}/${projectID}/like`;
         const response = await apiConnector("POST", url, null, {
             Authorization: `Bearer ${token.token}`
         });
 
-        console.log("LIKE DISLIKE RESPONSE ", response);
-        
+        console.log("Liked project successfully", response);
     } catch (err) {
-        console.log("Error while Liking or disliking Post \n", err);
+        console.log("Error while liking project", err);
     }
 }
+
+export async function dislikeProject(token, projectID) {
+    try {
+        const url = `${GET_USER_PROJECTS_API}/${projectID}/dislike`;
+        const response = await apiConnector("POST", url, null, {
+            Authorization: `Bearer ${token.token}`
+        });
+
+        console.log("Disliked project successfully", response);
+    } catch (err) {
+        console.log("Error while disliking project", err);
+    }
+}
+
+

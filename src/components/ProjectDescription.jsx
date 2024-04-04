@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Milestone from './Milestone';
 import ProjectParticipants from './ProjectParticipants';
 import { useLocation } from 'react-router-dom';
-import { getProjectByID, likeOrDislike  } from '../services/operations/projectAPI';
+import { getProjectByID, likeProject, dislikeProject, getLikes } from '../services/operations/projectAPI';
 import { useSelector } from 'react-redux';
 import { Spinner } from "../components/Spinner"
 import { FcLikePlaceholder, FcLike } from "react-icons/fc";
@@ -10,18 +10,19 @@ import { FcLikePlaceholder, FcLike } from "react-icons/fc";
 export default function ProjectDescription() {
     const location = useLocation();
     const token = useSelector((state) => state.auth);
+    const user = useSelector((state)=> state.profile)
     const projectId = location.pathname.split('/').slice(-1)[0];
     const [project, setProject] = useState(null);
-    const [isLiked, setIsLiked] = useState(false);
+    const [isLiked, setIsLiked] = useState(null);
 
-    function LikeHandler(){
+    function LikeHandler() {
         const fetchLiked = async () => {
-            try {
-                await likeOrDislike(token, projectId, !isLiked);
-                setIsLiked(prevState => !prevState);
-            } catch (err) {
-                console.error("Error while liking or disliking:", err);
+            if (isLiked) {
+                dislikeProject(token, projectId);
+            } else {
+                likeProject(token, projectId);
             }
+            setIsLiked(prevState => !prevState);
         };
 
         fetchLiked();
@@ -32,7 +33,9 @@ export default function ProjectDescription() {
         const fetchData = async () => {
             try {
                 const projectData = await getProjectByID(token, projectId);
-                setProject(projectData); // Set project data to state
+                const getLike = await getLikes(token, projectId)
+                setProject(projectData);
+                setIsLiked(getLike)
             } catch (err) {
                 // Handle errors here
                 console.log(err.message)
@@ -40,10 +43,10 @@ export default function ProjectDescription() {
         };
 
         fetchData();
-    }, [projectId, token]);
+    }, [projectId, token, user]);
 
     if (!project) {
-        return <Spinner />; // Render a loading indicator while fetching data
+        return <Spinner />;
     }
 
     const { title, description, createdAt, files } = project;

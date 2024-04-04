@@ -7,22 +7,12 @@ import { useSelector } from 'react-redux'
 import { Spinner } from './Spinner'
 
 export const DashboardUtil = () => {
-    const { loading: profileLoading } = useSelector((state) => state.profile)
-  const { loading: authLoading } = useSelector((state) => state.auth)
+    const user = useSelector((state) => state.profile.user);
 
-
-  if(profileLoading || authLoading){
-    return <Spinner/>
-  }
     return (
         <div className='w-11/12 max-w-5xl mx-auto mt-9 mb-5'>
-
-        {
-
-        }
             <div className=" md:text-left bg-cover mb-8 bg-center bg-no-repeat h-[500px] border rounded-lg flex flex-col justify-end pb-[2.5rem] pl-5" style={{ backgroundImage: `url(${imgPath})` }}>
-                {/* to be fetched from DB API */}
-                <h1 className='text-4xl font-extrabold mb-2 text-white'>Hi,Keshav</h1>
+                <h1 className='text-4xl font-extrabold mb-2 text-white'>Hi, {user.firstName}</h1>
                 <p className='text-[14px] font-medium text-gray-500 mb-7'>Welcome to ScholarsBox, Here are your projects and recent activity.</p>
                 <SearchBar />
             </div>

@@ -7,6 +7,7 @@ export const endpoints = {
   LOGIN_API: BASE_URL + "/login",
   RESETPASSTOKEN_API: BASE_URL + "/reset_password_token",
   RESETPASSWORD_API: BASE_URL + "/reset-password",
+  USER_API : BASE_URL + "/user"
 }
 
 // PROJECT ENDPOINTS
