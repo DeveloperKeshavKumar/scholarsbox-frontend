@@ -14,7 +14,6 @@ import VerifyEmail from './pages/verifyEmail';
 import CreateProjectPage from './pages/CreateProjectPage';
 import PublicRoute from './routes/PublicRoute';
 import PrivateRoute from './routes/PrivateRoute';
-// import LogoutOnWindowExit from './components/LogoutOnWindowExit';
 
 function App() {
   const { user } = useSelector((state) => state.profile)
@@ -45,7 +44,6 @@ function App() {
           <Route path='*' element={<div className='text-4xl mt-16 tracking-wider text-blue-600'>404 Not Found</div>} />
         </Route>
       </Routes>
-      {/* <LogoutOnWindowExit /> */}
     </div>
   );
 }
