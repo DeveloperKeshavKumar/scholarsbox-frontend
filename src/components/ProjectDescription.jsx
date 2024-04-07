@@ -6,11 +6,11 @@ import { getProjectByID, likeProject, dislikeProject, getLikes } from '../servic
 import { useSelector } from 'react-redux';
 import { Spinner } from "../components/Spinner"
 import { FcLikePlaceholder, FcLike } from "react-icons/fc";
+import { Link } from 'react-router-dom';
 
 export default function ProjectDescription() {
     const location = useLocation();
     const token = useSelector((state) => state.auth);
-    const user = useSelector((state)=> state.profile)
     const projectId = location.pathname.split('/').slice(-1)[0];
     const [project, setProject] = useState(null);
     const [isLiked, setIsLiked] = useState(null);
@@ -43,16 +43,15 @@ export default function ProjectDescription() {
         };
 
         fetchData();
-    }, [projectId, token, user]);
+    }, [projectId, token]);
 
     if (!project) {
         return <Spinner />;
     }
 
-    const { title, description, createdAt, files } = project;
+    const { title, description, createdAt, files, _id } = project;
     const createdAtDate = new Date(createdAt);
     const formattedDate = `${createdAtDate.getFullYear()}-${(createdAtDate.getMonth() + 1).toString().padStart(2, '0')}-${createdAtDate.getDate().toString().padStart(2, '0')}`;
-    // console.log(formattedDate);
     const imgPath = files[0];
 
     return (
@@ -76,12 +75,16 @@ export default function ProjectDescription() {
                                 !isLiked ? <FcLikePlaceholder fontSize={"2.3rem"} /> : <FcLike fontSize={"2.3rem"} />
                             }
                         </button>
-                        <button className='px-2 py-1 lg:px-4 lg:py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 focus:z-10 focus:ring-1 focus:ring-blue-600 focus:text-blue-600'>
-                            Edit Project
+                        <Link to={`/projects/${_id}/edit`}>
+                            <button className='px-2 py-1 lg:px-4 lg:py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 focus:z-10 focus:ring-1 focus:ring-blue-600 focus:text-blue-600'>
+                                Edit Project
+                            </button>
+                        </Link>
+                        <Link to={`/projects/${_id}/delete`}>
+                        <button className='px-2 py-1 lg:px-4 lg:py-2 text-sm font-medium text-white bg-blue-600 border border-blue-400 rounded-lg hover:bg-red-700 hover:border-red-700 hover:text-white focus:z-10 focus:ring-1 focus:ring-blue-600 focus:text-white-600'>
+                            Delete Project
                         </button>
-                        <button className='px-2 py-1 lg:px-4 lg:py-2 text-sm font-medium text-white bg-blue-600 border border-blue-400 rounded-lg hover:bg-blue-700 hover:text-white focus:z-10 focus:ring-1 focus:ring-blue-600 focus:text-white-600'>
-                            Leave Project
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -1,11 +1,11 @@
 import { toast } from "react-hot-toast"
 import { apiConnector } from "../apiConnector"
 import { projectEndpoints, endpoints } from "../apis"
-import { setLoading } from "../../slices/projectSlice"
+import { resetProjectState, setLoading } from "../../slices/projectSlice"
 import { setUser } from "../../slices/profileSlice"
 
 const { CREATE_PROJECT_API, GET_USER_PROJECTS_API } = projectEndpoints
-const {USER_API} = endpoints;
+const { USER_API } = endpoints;
 
 
 export function createProject(projectTitle, projectDescription, projectTags, projectFile, token, navigate) {
@@ -32,10 +32,10 @@ export function createProject(projectTitle, projectDescription, projectTags, pro
             }
             toast.success("Project created successfully");
             response = await apiConnector("GET", USER_API, null, {
-                Authorization : `Bearer ${token.token}`
+                Authorization: `Bearer ${token.token}`
             });
             localStorage.setItem("user", JSON.stringify(response.data.user))
-            dispatch(setUser({ ...response.data.user}))
+            dispatch(setUser({ ...response.data.user }))
             navigate(`/projects/${projectId}`);
         } catch (error) {
             console.log("CREATE PROJECT API ERROR............", error);
@@ -76,7 +76,7 @@ export async function getLikes(token, projectID) {
             Authorization: `Bearer ${token.token}`
         });
 
-        console.log("LIKES RESPONSE ",response)
+        console.log("LIKES RESPONSE ", response)
 
         console.log("likes Came from server")
         return response.data.data;
@@ -90,27 +90,51 @@ export async function getLikes(token, projectID) {
 export async function likeProject(token, projectID) {
     try {
         const url = `${GET_USER_PROJECTS_API}/${projectID}/like`;
-        const response = await apiConnector("POST", url, null, {
+        await apiConnector("POST", url, null, {
             Authorization: `Bearer ${token.token}`
         });
-
-        console.log("Liked project successfully", response);
+        toast.success("Project Liked Successfully")
     } catch (err) {
         console.log("Error while liking project", err);
+        toast.error("Error while liking project");
     }
 }
 
 export async function dislikeProject(token, projectID) {
     try {
         const url = `${GET_USER_PROJECTS_API}/${projectID}/dislike`;
-        const response = await apiConnector("POST", url, null, {
+        await apiConnector("POST", url, null, {
             Authorization: `Bearer ${token.token}`
         });
-
-        console.log("Disliked project successfully", response);
+        toast.success("Project Disliked Sucessfully")
     } catch (err) {
+        toast.error("Error while disliking project");
         console.log("Error while disliking project", err);
     }
 }
 
 
+export async function deleteProject(token, projectID, navigate,dispatch) {
+    const toastId = toast.loading("Loading...");
+    dispatch(setLoading(true));
+    try {
+        const url = `${GET_USER_PROJECTS_API}/${projectID}`;
+        let response = await apiConnector("DELETE", url, null, {
+            Authorization: `Bearer ${token.token}`
+        });
+        dispatch(resetProjectState(null))
+        toast.success("Project Deleted Successfully");
+        response = await apiConnector("GET", USER_API, null, {
+            Authorization: `Bearer ${token.token}`
+        });
+        localStorage.setItem("user", JSON.stringify(response.data.user))
+        dispatch(setUser({ ...response.data.user }))
+        navigate("/projects/create")
+    } catch (err) {
+        toast.error("Error while deleting project");
+        console.log("Error while deleting project", err);
+    }
+    dispatch(setLoading(false));
+    toast.dismiss(toastId);
+
+}

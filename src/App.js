@@ -14,6 +14,7 @@ import VerifyEmail from './pages/verifyEmail';
 import CreateProjectPage from './pages/CreateProjectPage';
 import PublicRoute from './routes/PublicRoute';
 import PrivateRoute from './routes/PrivateRoute';
+import DeleteProjectPage from './pages/DeleteProjectPage';
 
 function App() {
   const { user } = useSelector((state) => state.profile)
@@ -33,7 +34,7 @@ function App() {
             <Route path='/projects/create' element={<PrivateRoute><CreateProjectPage /></PrivateRoute>} />
             <Route path={'/projects/:project'} element={<ProjectPage />} />
             <Route path='/projects/:id/edit' element={<PrivateRoute><EditProjectPage /></PrivateRoute>} />
-            <Route path='/projects/:id/delete' element={<PrivateRoute></PrivateRoute>} />
+            <Route path='/projects/:id/delete' element={<PrivateRoute><DeleteProjectPage /></PrivateRoute>} />
           </Route>
           <Route path='/auth' element={<Outlet />}>
             <Route path='/auth/signup' element={<PublicRoute><Signup /></PublicRoute>} />
