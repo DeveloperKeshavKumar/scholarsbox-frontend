@@ -27,7 +27,7 @@ export default function UserHeader() {
                 <div className="profileDetails lg:text-left md:text-left ml-3 ">
                     {/* Fetched from API later */}
                     <h1 className="text-[20px] font-semibold">{user.firstName+" "+user.lastName}</h1>
-                    <div className=" text-gray-600 flex items-center justify-center md:justify-normal "><CiUser fontSize="1.2rem"/><p className="font-medium">: {user?.rollNum}</p></div>
+                    <div className=" text-gray-600 flex items-center justify-center md:justify-normal "><CiUser fontSize="1.2rem"/><p className="font-medium">: {user?.rollNo}</p></div>
                     <p className="max-w-[250px] text-wrap text-gray-600">{user.branch}, {user.passingYear-4 +"-"+user.passingYear}</p>
                 </div>
             </div>
