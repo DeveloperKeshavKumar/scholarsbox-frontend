@@ -153,18 +153,25 @@ function SignupForm() {
                         <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-8">
                             Branch <sup className="text-red-500 font-bold text-sm">*</sup>
                         </p>
-                        <input
+                        <select
                             required
                             type="text"
                             name="branch"
                             value={branch}
                             onChange={handleOnChange}
-                            placeholder="Enter your branch"
                             style={{
                                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
                             }}
                             className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-8"
-                        />
+                        >
+                            <option value="">Select Branch below</option>
+                            <option value="Civil">Civil Engineering</option>
+                            <option value="Computer Science">Comp. Sci. & Engg.</option>
+                            <option value="Computer Science (AI & ML)">CSE (AI/ML)</option>
+                            <option value="Electronics">Elec. & Comm. Engg.</option>
+                            <option value="Electrical">Electrical Engineering</option>
+                            <option value="Mechanical">Mechanical Engineering</option>
+                        </select>
                     </label>
                 </div>
                 <div className="flex gap-x-4">
@@ -178,7 +185,7 @@ function SignupForm() {
                             name="currentYear"
                             value={currentYear}
                             onChange={handleOnChange}
-                            placeholder="Enter current year"
+                            placeholder="Enter i.e. 1, 2, 3, 4"
                             style={{
                                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
                             }}
@@ -196,7 +203,7 @@ function SignupForm() {
                             name="passingYear"
                             value={passingYear}
                             onChange={handleOnChange}
-                            placeholder="Enter passing year"
+                            placeholder="Enter i.e. 2024, 2025 etc."
                             style={{
                                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
                             }}
