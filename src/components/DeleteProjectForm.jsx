@@ -42,7 +42,7 @@ export default function DeleteProjectForm() {
 
 
     return (
-        <div className='w-11/12 max-w-5xl max-h-min mx-auto mt-9 mb-5 flex flex-col items-center'>
+        <div className='w-11/12 max-w-5xl max-h-min mx-auto mt-9 mb-5 flex flex-col items-center relative'>
             <h1 className='text-3xl font-bold'>Delete Project</h1>
             <p className=' text-gray-700 text-[18px] mt-4'>Are you sure to delete this project? This action cannot be undone. </p>
             <h2 className='my-4 text-balance text-2xl font-semibold'>Project Details</h2>
@@ -56,7 +56,7 @@ export default function DeleteProjectForm() {
                 Delete Project
             </button>
             {
-                isPopUp && <div className='absolute w-[60%] h-[35%] bg-gray-200 rounded-md flex flex-col justify-center items-center'>
+                isPopUp && <div className='absolute w-[100%] h-[100%] bg-gray-200 border border-blue-400 rounded-md flex flex-col justify-center items-center z-10'>
                     <p>Re-write the phrase <b className='text-red-500'>Delete {project.title}</b></p>
                     <input className='w-[40%] mt-3 rounded' type="text" value={value} onChange={(e) => setValue(e.target.value)} />
                     <div className='flex gap-2'>

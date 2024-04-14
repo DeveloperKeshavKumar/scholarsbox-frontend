@@ -2,7 +2,6 @@ import { React, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { createProject } from '../services/operations/projectAPI';
-// import { setToken } from '../slices/authSlice';
 import { setProjectData } from '../slices/projectSlice';
 
 export default function CreateProjectUtil() {
@@ -30,14 +29,13 @@ export default function CreateProjectUtil() {
             ...prevData,
             [name]: newValue,
         }));
-        // console.log(tags)
     }
 
     const handleFileChange = (e) => {
         const { name, files } = e.target;
         setProjectFormData(prevData => ({
             ...prevData,
-            [name]: files[0], // Assuming you only want to handle one file selection
+            [name]: files[0], 
         }));
     };
 
