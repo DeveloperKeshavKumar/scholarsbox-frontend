@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react';
+import { React, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { createProject } from '../services/operations/projectAPI';
@@ -7,9 +7,6 @@ import { setProjectData } from '../slices/projectSlice';
 export default function CreateProjectUtil() {
 
     const token = useSelector((state)=> state.auth);
-    useEffect(()=>{
-        console.log(token);
-    },[token])
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)
@@ -144,8 +141,6 @@ export default function CreateProjectUtil() {
                             }}
                             className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-8"
                         />
-
-
                     </label>
 
                     <div className="flex gap-3 justify-center">
