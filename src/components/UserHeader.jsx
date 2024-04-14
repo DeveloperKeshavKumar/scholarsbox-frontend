@@ -17,7 +17,6 @@ export default function UserHeader({user, userId}) {
             console.log("Access Denied")
         }
     }
-    console.log("User in Userheader passed from userpage.ksx",user._id +"AND "+ userId)
 
     return (
         <div className="mt-10 w-11/12 max-w-5xl mx-auto flex gap-y-4 lg:flex-row lg:gap-0 md:gap-0 md:flex-row flex-col items-center justify-between">

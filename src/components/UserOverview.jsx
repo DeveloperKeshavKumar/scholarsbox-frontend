@@ -1,5 +1,4 @@
 import UserProjectCard from "./UserProjectCard";
-import UserAchievement from "./UserAchievement";
 import { Link } from "react-router-dom";
 
 export default function UserOverview({ user }) {
@@ -19,17 +18,15 @@ export default function UserOverview({ user }) {
                 </div>
                 <div className="mt-5">
                     <h2 className="text-[20px] font-semibold md:text-left lg:text-left mb-2">Goals</h2>
-                    <ul className="list-disc text-left lg:ml-9 md:ml-9 text-gray-800 ml-4">
                         {user && user.goals && user.goals.length > 0 ? (
-                            <ul>
-                                {JSON.parse(user.goals[0]).map((goal, index) => (
+                            <ul className="list-disc text-left lg:ml-9 md:ml-9 text-gray-800 ml-4">
+                                {user.goals.map((goal, index) => (
                                     <li key={index} className=" list-disc">{goal}</li>
                                 ))}
                             </ul>
                         ) : (
                             <p>No goals available</p>
-                        )}
-                    </ul>
+                        )}          
                 </div>
             </div>
 
@@ -38,7 +35,6 @@ export default function UserOverview({ user }) {
                 <div className="h-[3px] w-full rounded-md bg-black mt-1"></div>
             </div>
             <div className="mt-5">
-                {/* display project card using map at api data */}
                 {
                     projects.map((projectId, index) => (
                         <Link to={"/projects/" + projectId}>
@@ -55,13 +51,17 @@ export default function UserOverview({ user }) {
 
             <div className="mt-5 ">
                 <div className="ml-5">
-                    <UserAchievement />
-                    <UserAchievement />
-                    <UserAchievement />
-                    <UserAchievement />
+                    {user && user.achievements && user.achievements.length > 0 ? (
+                        <ul className="list-disc text-left lg:ml-9 md:ml-9 text-gray-800 ml-4">
+                            {user.achievements.map((achievement, index) => (
+                                <li key={index} className=" list-disc">{achievement}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No achievements available</p>
+                    )}
                 </div>
             </div>
-
             <>
                 {/* Social media Handles of user */}
             </>

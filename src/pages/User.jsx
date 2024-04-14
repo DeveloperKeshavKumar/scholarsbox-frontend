@@ -18,18 +18,14 @@ const Userdetails = () => {
   useEffect(() => {
     async function fetchUserData() {
       try {
-        if (user._id != userId) {
+        if (user._id !== userId) {
           const userData = await getUser(token, userId);
-          console.log("USER'S DATA from get user", userData);
           setUserProfile(userData)
         }
       } catch (error) {
         console.error(error);
       }
     }
-
-    console.log("user._id:", user._id);
-    console.log("userId", userId)
     if (userId !== user._id) {
       fetchUserData();
     }
