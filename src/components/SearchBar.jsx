@@ -3,7 +3,7 @@ import { MdSearch } from 'react-icons/md'
 
 export default function SearchBar() {
     return (
-        <div className="lg:w-[80%] w-full gap-y-4 flex lg:flex-row lg:justify-between lg:items-center  flex-col">
+        <div className="mx-auto w-[50%] mt-3 lg:mx-0 lg:mt-0 lg:justify-start gap-y-4 flex lg:flex-row lg:items-center  flex-col">
             <div className="lg:w-[250px] lg:block flex flex-col">
                 <form className="">
                     <div className="relative">
