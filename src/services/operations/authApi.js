@@ -103,6 +103,9 @@ export function logout(navigate) {
     dispatch(setUser(null))
     localStorage.removeItem("token")
     localStorage.removeItem("user")
+    localStorage.removeItem("likeFactor")
+    localStorage.removeItem("likes")
+    localStorage.removeItem("totalLikes")
     toast.success("Logged Out")
     navigate("/")
   }
