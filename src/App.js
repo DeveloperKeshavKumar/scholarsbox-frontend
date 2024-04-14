@@ -9,16 +9,14 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import { Outlet, Route, Routes, } from 'react-router-dom';
-import { useSelector } from "react-redux";
 import VerifyEmail from './pages/verifyEmail';
 import CreateProjectPage from './pages/CreateProjectPage';
 import PublicRoute from './routes/PublicRoute';
 import PrivateRoute from './routes/PrivateRoute';
 import DeleteProjectPage from './pages/DeleteProjectPage';
+import EditUser from './pages/EditUser';
 
 function App() {
-  const { user } = useSelector((state) => state.profile)
-
   return (
     <div className="App">
       <Routes>
@@ -26,11 +24,11 @@ function App() {
           <Route index element={<Homepage />} />
           <Route path='/dashboard' element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path='/user' element={<Outlet />} >
-            <Route path={'/user/' + user?._id} element={<PrivateRoute><User /></PrivateRoute>} />
-            <Route path='/user/edit' element={<></>} />
+            <Route path={'/user/:id' } element={<PrivateRoute><User /></PrivateRoute>} />
+            <Route path='/user/:id/edit' element={<><EditUser/></>} />
           </Route>
           <Route path='/projects' element={<Outlet />} >
-            <Route path='/projects' element={<PrivateRoute><Projects /></PrivateRoute>} />
+            <Route path='/projects' element={<><Projects /></>} />
             <Route path='/projects/create' element={<PrivateRoute><CreateProjectPage /></PrivateRoute>} />
             <Route path={'/projects/:project'} element={<ProjectPage />} />
             <Route path='/projects/:id/edit' element={<PrivateRoute><EditProjectPage /></PrivateRoute>} />
