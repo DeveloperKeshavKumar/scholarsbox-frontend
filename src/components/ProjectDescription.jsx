@@ -19,18 +19,33 @@ export default function ProjectDescription() {
 
     function LikeHandler() {
         const fetchLiked = async () => {
-            if (isLiked) {
-                dislikeProject(token, projectId);
-            } else {
-                likeProject(token, projectId);
+            try {
+                if (isLiked) {
+                    await dislikeProject(token, projectId);
+                    // If disliked, decrement like count
+                    setProject(prevProject => ({
+                        ...prevProject,
+                        likes: prevProject.likes.filter(userId => userId !== currentUserID)
+                    }));
+                } else {
+                    await likeProject(token, projectId);
+                    // If liked, increment like count
+                    setProject(prevProject => ({
+                        ...prevProject,
+                        likes: [...prevProject.likes, currentUserID]
+                    }));
+                }
+                // Toggle the like status
+                setIsLiked(prevState => !prevState);
+            } catch (error) {
+                console.error("Error updating like:", error);
             }
-            setIsLiked(prevState => !prevState);
         };
 
         fetchLiked();
     }
 
-    function handleTagFilter(tag){
+    function handleTagFilter(tag) {
 
     }
     useEffect(() => {
@@ -90,11 +105,14 @@ export default function ProjectDescription() {
                         </div>
                     </div>
                     <div className='flex gap-3 items-center'>
-                        <button onClick={LikeHandler}>
-                            {
-                                !isLiked ? <FcLikePlaceholder fontSize={"2.3rem"} /> : <FcLike fontSize={"2.3rem"} />
-                            }
-                        </button>
+                        <div className='flex gap-x-2 items-center justify-center'>
+                            <button onClick={LikeHandler}>
+                                {
+                                    !isLiked ? <FcLikePlaceholder fontSize={"2.3rem"} /> : <FcLike fontSize={"2.3rem"} />
+                                }
+                            </button>
+                            <p className='mt-3 bg-red-200 rounded-md border border-red-400 font-semibold px-3 py-1 mr-2 mb-2 text-sm focus:outline-none self-center'>{project.likes.length}</p>
+                        </div>
                         {renderEditAndDeleteButtons}
                     </div>
                 </div>
