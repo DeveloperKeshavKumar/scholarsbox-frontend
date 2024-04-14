@@ -1,10 +1,8 @@
 import UserProjectCard from "./UserProjectCard";
 import UserAchievement from "./UserAchievement";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-export default function UserOverview() {
-    const { user } = useSelector((state) => state.profile)
+export default function UserOverview({ user }) {
     const projects = user.projects
     return (
         <div className="w-11/12 max-w-5xl mx-auto mt-10">
@@ -16,17 +14,21 @@ export default function UserOverview() {
                 <div className="mt-5">
                     <h2 className="text-[20px] font-semibold md:text-left lg:text-left mb-2">Bio</h2>
                     <p className="text-justify lg:ml-5 md:ml-5 text-gray-800">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in hendrerit libero. Morbi id orci eros. Nam ullamcorper maximus metus, in lobortis purus vestibulum id. Vestibulum eu dui euismod, iaculis quam et, pellentesque sem. In congue ac mauris blandit posuere. Nulla ultrices venenatis lorem, vel tempor purus consectetur at. Donec nec nisi imperdiet, efficitur justo vitae, blandit justo. In malesuada tortor sapien, ac porttitor arcu vestibulum sit amet. Vivamus tempor convallis ex, eget volutpat libero laoreet id. Ut vel tempus nulla, in mollis urna. Nunc elementum volutpat dui sed tincidunt.
+                        {user?.bio ? user.bio : "Enter your bio in edit profile"}
                     </p>
                 </div>
                 <div className="mt-5">
                     <h2 className="text-[20px] font-semibold md:text-left lg:text-left mb-2">Goals</h2>
                     <ul className="list-disc text-left lg:ml-9 md:ml-9 text-gray-800 ml-4">
-                        <li>Praesent laoreet tortor ac ligula cursus, vitae vestibulum nisl viverra.</li>
-                        <li>Fusce porta tortor mollis molestie efficitur.</li>
-                        <li>Mauris eleifend mauris a sapien vestibulum porttitor.</li>
-                        <li>Duis fermentum ex suscipit iaculis semper.</li>
-                        <li>Ut quis nisi sodales, tristique arcu et, tincidunt nisl.</li>
+                        {user && user.goals && user.goals.length > 0 ? (
+                            <ul>
+                                {JSON.parse(user.goals[0]).map((goal, index) => (
+                                    <li key={index} className=" list-disc">{goal}</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No goals available</p>
+                        )}
                     </ul>
                 </div>
             </div>
@@ -38,10 +40,9 @@ export default function UserOverview() {
             <div className="mt-5">
                 {/* display project card using map at api data */}
                 {
-                    projects.map((projectId,index)=>(
-                        <Link to={"/projects/"+projectId}>
-
-                        <UserProjectCard key={index} projectId={projectId}/>
+                    projects.map((projectId, index) => (
+                        <Link to={"/projects/" + projectId}>
+                            <UserProjectCard key={index} projectId={projectId} />
                         </Link>
                     ))
                 }
@@ -54,10 +55,10 @@ export default function UserOverview() {
 
             <div className="mt-5 ">
                 <div className="ml-5">
-                    <UserAchievement/>
-                    <UserAchievement/>
-                    <UserAchievement/>
-                    <UserAchievement/>
+                    <UserAchievement />
+                    <UserAchievement />
+                    <UserAchievement />
+                    <UserAchievement />
                 </div>
             </div>
 
