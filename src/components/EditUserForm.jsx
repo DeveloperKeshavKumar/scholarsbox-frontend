@@ -12,24 +12,6 @@ export default function EditUserForm() {
   const [loading, setLoading] = useState(false)
   const userId = location.pathname.split('/').slice(-2)[0];
 
-  let goalsAsString = ""
-  let achievementsAsString = ""
-  if (Array.isArray(user.goals) && user.goals.length > 0) {
-    try {
-       goalsAsString = user.goals.join(",");
-    } catch (error) {
-      console.error('Error parsing goals:', error);
-    }
-  }
-
-  if (Array.isArray(user.achievements) && user.achievements.length > 0) {
-    try {
-       achievementsAsString = user.achievements.join(",")
-    } catch (error) {
-      console.error('Error parsing goals:', error);
-    }
-  }
-
   const [formData, setFormData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
@@ -38,17 +20,11 @@ export default function EditUserForm() {
     passingYear: user.passingYear,
     rollNum: user.rollNo,
     bio: user.bio,
-    goals: [],
-    achievements: [],
+    goals: user.goals,
+    achievements: user.achievements,
     profilepic: null
   })
 
-  useEffect(() => {
-    setFormData({
-      goals: goalsAsString,
-      achievements: achievementsAsString
-    })
-  },[goalsAsString, achievementsAsString])
 
   const { firstName, lastName, currentYear, passingYear, rollNum, branch, bio, goals, achievements } = formData
   function handleOnChange(e) {
