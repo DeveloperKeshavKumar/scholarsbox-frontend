@@ -16,24 +16,16 @@ export default function ProjectDescription() {
     const projectId = location.pathname.split('/').slice(-1)[0];
     const [project, setProject] = useState(null);
     const [isLiked, setIsLiked] = useState(null);
+    const [likeLength, setLikeLength] = useState(project?.likes.length);
+    console.log("Written LikeCount: ", likeLength);
 
     function LikeHandler() {
         const fetchLiked = async () => {
             try {
                 if (isLiked) {
                     await dislikeProject(token, projectId);
-                    // If disliked, decrement like count
-                    setProject(prevProject => ({
-                        ...prevProject,
-                        likes: prevProject.likes.filter(userId => userId !== currentUserID)
-                    }));
                 } else {
                     await likeProject(token, projectId);
-                    // If liked, increment like count
-                    setProject(prevProject => ({
-                        ...prevProject,
-                        likes: [...prevProject.likes, currentUserID]
-                    }));
                 }
                 // Toggle the like status
                 setIsLiked(prevState => !prevState);
@@ -52,9 +44,11 @@ export default function ProjectDescription() {
         const fetchData = async () => {
             try {
                 const projectData = await getProjectByID(token, projectId);
-                const getLike = await getLikes(token, projectId)
+                const { getLike, totalLikes } = await getLikes(token, projectId);
+                console.log("ELEMENT LIKE COUNT: ", totalLikes);
                 setProject(projectData);
-                setIsLiked(getLike)
+                setIsLiked(getLike);
+                setLikeLength(totalLikes)
                 dispatch(setProjectData(projectData));
             } catch (err) {
                 console.log(err.message)
@@ -62,11 +56,13 @@ export default function ProjectDescription() {
         };
 
         fetchData();
-    }, [projectId, token, dispatch]);
+    }, [projectId, token, dispatch, isLiked]);
 
     if (!project) {
         return <Spinner />;
     }
+
+    console.log(project)
 
     const { title, description, createdAt, files, _id, createdBy } = project;
     const createdAtDate = new Date(createdAt);
@@ -111,7 +107,7 @@ export default function ProjectDescription() {
                                     !isLiked ? <FcLikePlaceholder fontSize={"2.3rem"} /> : <FcLike fontSize={"2.3rem"} />
                                 }
                             </button>
-                            <p className='mt-3 bg-red-200 rounded-md border border-red-400 font-semibold px-3 py-1 mr-2 mb-2 text-sm focus:outline-none self-center'>{project.likes.length}</p>
+                            <p className='mt-3 bg-red-200 rounded-md border border-red-400 font-semibold px-3 py-1 mr-2 mb-2 text-sm focus:outline-none self-center'>{likeLength}</p>
                         </div>
                         {renderEditAndDeleteButtons}
                     </div>
@@ -141,7 +137,7 @@ export default function ProjectDescription() {
                     <h1 className='text-lg font-bold'>Tags</h1>
                 </div>
                 <div className='mt-5 flex ml-10'>
-                    {project.tags.length > 0 && JSON.parse(project.tags[0]).map((tag, index) => (
+                    {project.tags.map((tag, index) => (
                         <button
                             key={index}
                             className='bg-gray-200 rounded-md border border-blue-400 font-semibold px-3 py-1 mr-2 mb-2 text-sm focus:outline-none hover:bg-gray-600 hover:text-white'
