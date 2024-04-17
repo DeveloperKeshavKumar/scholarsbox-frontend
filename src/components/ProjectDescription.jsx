@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FcDocument } from "react-icons/fc";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getProjectByID, likeProject, dislikeProject, getLikes } from '../services/operations/projectAPI';
 import { setProjectData } from '../slices/projectSlice';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,44 +11,22 @@ import { Link } from 'react-router-dom';
 export default function ProjectDescription() {
     const location = useLocation();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const token = useSelector((state) => state.auth);
     const currentUserID = useSelector((state) => state.profile.user._id);
     const projectId = location.pathname.split('/').slice(-1)[0];
     const [project, setProject] = useState(null);
     const [isLiked, setIsLiked] = useState(null);
-    const [likeLength, setLikeLength] = useState(project?.likes.length);
-    console.log("Written LikeCount: ", likeLength);
+    const [likeCount, setLikeCount] = useState(0); 
 
-    function LikeHandler() {
-        const fetchLiked = async () => {
-            try {
-                if (isLiked) {
-                    await dislikeProject(token, projectId);
-                } else {
-                    await likeProject(token, projectId);
-                }
-                // Toggle the like status
-                setIsLiked(prevState => !prevState);
-            } catch (error) {
-                console.error("Error updating like:", error);
-            }
-        };
-
-        fetchLiked();
-    }
-
-    function handleTagFilter(tag) {
-
-    }
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const projectData = await getProjectByID(token, projectId);
-                const { getLike, totalLikes } = await getLikes(token, projectId);
-                console.log("ELEMENT LIKE COUNT: ", totalLikes);
+                const { getLike } = await getLikes(token, projectId);
                 setProject(projectData);
                 setIsLiked(getLike);
-                setLikeLength(totalLikes)
+                setLikeCount(projectData.likes?.length); 
                 dispatch(setProjectData(projectData));
             } catch (err) {
                 console.log(err.message)
@@ -56,7 +34,27 @@ export default function ProjectDescription() {
         };
 
         fetchData();
-    }, [projectId, token, dispatch, isLiked]);
+    }, [projectId, token, dispatch]);
+
+    const LikeHandler = async () => {
+        try {
+            if (isLiked) {
+                await dislikeProject(token, projectId);
+                setLikeCount(prevCount => prevCount - 1); // Decrement like count
+            } else {
+                await likeProject(token, projectId);
+                setLikeCount(prevCount => prevCount + 1); // Increment like count
+            }
+            // Toggle the like status
+            setIsLiked(prevState => !prevState);
+        } catch (error) {
+            console.error("Error updating like:", error);
+        }
+    };
+
+    function handleTagFilter(tag) {
+        navigate(`/projects?tag=${tag}`);
+    }
 
     if (!project) {
         return <Spinner />;
@@ -64,7 +62,7 @@ export default function ProjectDescription() {
 
     console.log(project)
 
-    const { title, description, createdAt, files, _id, createdBy } = project;
+    const { title, description, createdAt, files, _id, createdBy, url } = project;
     const createdAtDate = new Date(createdAt);
     const formattedDate = `${createdAtDate.getFullYear()}-${(createdAtDate.getMonth() + 1).toString().padStart(2, '0')}-${createdAtDate.getDate().toString().padStart(2, '0')}`;
     const imgPath = files[0];
@@ -93,7 +91,7 @@ export default function ProjectDescription() {
                 <h1 className='text-4xl text-left font-semibold'>Project : {title}</h1>
                 <div className='mt-10 w-11/12 max-w-5xl mx-auto flex gap-y-4 lg:flex-row lg:gap-0 md:gap-0 md:flex-row flex-col items-center justify-between'>
                     <div className='flex items-center flex-col gap-3 md:flex-row lg:flex-row'>
-                        <img src={imgPath} alt='profile pic' className='w-[150px] h-[150px] rounded-full bg-red-300 object-scale-down' />
+                        <img src={imgPath} alt='profile pic' className='w-[150px] h-[150px] rounded-full bg-red-300 object-cover' />
                         <div className='profileDetails lg:text-left md:text-left ml-3 '>
                             <h2 className='text-[20px] font-semibold'>{title}</h2>
                             <div className='max-w-[250px] text-gray-600 flex items-center justify-center md:justify-normal '>{description.length > 50 ? description.substring(0, 50) + " ....." : description}</div>
@@ -107,7 +105,7 @@ export default function ProjectDescription() {
                                     !isLiked ? <FcLikePlaceholder fontSize={"2.3rem"} /> : <FcLike fontSize={"2.3rem"} />
                                 }
                             </button>
-                            <p className='mt-3 bg-red-200 rounded-md border border-red-400 font-semibold px-3 py-1 mr-2 mb-2 text-sm focus:outline-none self-center'>{likeLength}</p>
+                            <p className='mt-3 bg-red-200 rounded-md border border-red-400 font-semibold px-3 py-1 mr-2 mb-2 text-sm focus:outline-none self-center'>{likeCount}</p>
                         </div>
                         {renderEditAndDeleteButtons}
                     </div>
@@ -132,6 +130,17 @@ export default function ProjectDescription() {
                         </a>
                     ))}
                 </div>
+
+                {
+                    url && <>
+                        <div className='max-w-max flex flex-col mt-10'>
+                            <h1 className='text-lg font-bold'>GitHub Repository</h1>
+                        </div>
+                        <div className='mt-5 text-justify ml-10'>
+                            <a href={url} target='_blank' rel="noreferrer noopener" className=" font-semibold underline">{url?.split("/").slice(-1)[0]}</a>
+                        </div>
+                    </>
+                }
 
                 <div className='max-w-max flex flex-col mt-10'>
                     <h1 className='text-lg font-bold'>Tags</h1>
