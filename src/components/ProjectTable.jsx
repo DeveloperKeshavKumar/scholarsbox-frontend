@@ -1,167 +1,98 @@
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { AgGridReact } from 'ag-grid-react';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllProjects } from '../services/operations/projectAPI';
 
 export default function AllProjects() {
+    const dispatch = useDispatch();
+    const { allProjects } = useSelector((state) => state.project);
 
-    
+    useEffect(() => {
+        dispatch(getAllProjects());
+    }, [dispatch]);
 
-    const [rowData, setRowData] = useState([
-        {
-            make: 'Tesla',
-            model: 'Model Y',
-            price: 64950,
-            electric: true,
-            month: 'June',
-        },
-        {
-            make: 'Ford',
-            model: 'F-Series',
-            price: 33850,
-            electric: false,
-            month: 'October',
-        },
-        {
-            make: 'Toyota',
-            model: 'Corolla',
-            price: 29600,
-            electric: false,
-            month: 'August',
-        },
-        {
-            make: 'Mercedes',
-            model: 'EQA',
-            price: 48890,
-            electric: true,
-            month: 'February',
-        },
-        {
-            make: 'Fiat',
-            model: '500',
-            price: 15774,
-            electric: false,
-            month: 'January',
-        },
-        {
-            make: 'Nissan',
-            model: 'Juke',
-            price: 20675,
-            electric: false,
-            month: 'March',
-        },
-        {
-            make: 'Vauxhall',
-            model: 'Corsa',
-            price: 18460,
-            electric: false,
-            month: 'July',
-        },
-        {
-            make: 'Volvo',
-            model: 'EX30',
-            price: 33795,
-            electric: true,
-            month: 'September',
-        },
-        {
-            make: 'Mercedes',
-            model: 'Maybach',
-            price: 175720,
-            electric: false,
-            month: 'December',
-        },
-        {
-            make: 'Vauxhall',
-            model: 'Astra',
-            price: 25795,
-            electric: false,
-            month: 'April',
-        },
-        {
-            make: 'Fiat',
-            model: 'Panda',
-            price: 13724,
-            electric: false,
-            month: 'November',
-        },
-        {
-            make: 'Jaguar',
-            model: 'I-PACE',
-            price: 69425,
-            electric: true,
-            month: 'May',
-        },
-    ]);
+    const [rowData, setRowData] = useState([]);
 
-    const [columnDefs, setColumnDefs] = useState([
+    useEffect(() => {
+        if (typeof allProjects === 'object') {
+            const projectsArray = Object.values(allProjects).flat();
+            const rowData = projectsArray.map((project) => (
+                {
+                    Title: project.title,
+                    Description: project.description,
+                    Likes: project.likes?.length || 0,
+                    Tags: project.tags.join(', '),
+                    URL: project.url,
+                    _id: project._id,
+                }));
+            setRowData(rowData);
+        }
+    }, [allProjects]);
+
+    const columnDefs = useMemo(() => [
         {
-            field: 'make',
-            checkboxSelection: true,
-            editable: true,
-            cellEditor: 'agSelectCellEditor',
-            cellEditorParams: {
-                values: [
-                    'Tesla',
-                    'Ford',
-                    'Toyota',
-                    'Mercedes',
-                    'Fiat',
-                    'Nissan',
-                    'Vauxhall',
-                    'Volvo',
-                    'Jaguar',
-                ],
+            field: 'Title',
+            cellRenderer: (params) => {
+                const projectId = params.data._id;
+                return (
+                    <a href={`/projects/${projectId}`} target="_blank" rel="noreferrer noopener">
+                        {params.value}
+                    </a>
+                );
             },
         },
-        { field: 'model' },
-        { field: 'price', filter: 'agNumberColumnFilter' },
-        { field: 'electric' },
         {
-            field: 'month',
-            comparator: (valueA, valueB) => {
-                const months = [
-                    'January',
-                    'February',
-                    'March',
-                    'April',
-                    'May',
-                    'June',
-                    'July',
-                    'August',
-                    'September',
-                    'October',
-                    'November',
-                    'December',
-                ];
-                const idxA = months.indexOf(valueA);
-                const idxB = months.indexOf(valueB);
-                return idxA - idxB;
+            field: 'Description',
+            cellRenderer: (params) => {
+                const projectId = params.data._id;
+                return (
+                    <a href={`/projects/${projectId}`} target="_blank" rel="noreferrer noopener">
+                        {params.value}
+                    </a>
+                );
             },
         },
-    ]);
+        {
+            field: 'Likes'
+        },
+        {
+            field: 'Tags',
+            cellRenderer: (params) => {
+                const projectId = params.data._id;
+                return (
+                    <a href={`/projects/${projectId}`} target="_blank" rel="noreferrer noopener">
+                        {params.value}
+                    </a>
+                );
+            },
+        },
+        {
+            field: 'URL'
+            ,
+            cellRenderer: (params) => {
+                return (
+                    <a href={params.data.URL} target="_blank" rel="noreferrer noopener">
+                        {params.value}
+                    </a>
+                );
+            },
+        },
+        { field: '_id', hide: true },
+    ], []);
 
+    const defaultColDef = useMemo(() => ({
+        filter: 'agTextColumnFilter',
+        floatingFilter: true,
+    }), []);
 
-    const defaultColDef = useMemo(() => {
-        return {
-            filter: 'agTextColumnFilter',
-            floatingFilter: true,
-        };
-    }, []);
-    const paginationPageSizeSelector = useMemo(() => {
-        return [5, 10, 15];
-    }, []);
+    const paginationPageSizeSelector = useMemo(() => [5, 10, 15], []);
 
     return (
-        <div className='w-11/12 max-w-5xl mx-auto mt-8 mb-12'>
-
-            <div >
-                <div
-                    style={{ height: "70vh " }}
-                    className={
-                        "ag-theme-quartz "
-                    }
-                >
+        <div className="w-11/12 max-w-5xl mx-auto mt-8 mb-12">
+            <div>
+                <div style={{ height: "70vh" }} className="ag-theme-quartz">
                     <AgGridReact
                         rowData={rowData}
                         columnDefs={columnDefs}
@@ -175,4 +106,4 @@ export default function AllProjects() {
             </div>
         </div>
     );
-};
+}
