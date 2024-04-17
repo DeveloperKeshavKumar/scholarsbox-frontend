@@ -7,6 +7,7 @@ import { setProjectData } from '../slices/projectSlice';
 export default function EditProjectUtil() {
     const token = useSelector((state) => state.auth);
     const projectData = useSelector(state => state.project.projectData);
+    console.log(projectData)
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
@@ -16,39 +17,27 @@ export default function EditProjectUtil() {
         title: "",
         description: "",
         tags: [],
+        url: "",
         projectFiles: null
     });
-
-    console.log("Slice Updated Data", projectData);
-    let tagsArray = [];
-
-    if (Array.isArray(projectData.tags) && projectData.tags.length > 0) {
-        const firstTag = projectData.tags[0];
-        if (typeof firstTag === 'string') {
-            try {
-                tagsArray = JSON.parse(firstTag);
-            } catch (error) {
-                console.error('Error parsing tags:', error);
-            }
-        }
-    }
-    const tagsAsString = tagsArray.length > 0 ? tagsArray.join(", ") : '';
 
     useEffect(() => {
         if (projectData) {
             setProjectFormData({
                 title: projectData.title,
                 description: projectData.description,
-                tags: tagsAsString,
+                tags: projectData.tags,
+                url: projectData.url,
                 projectFiles: null
             });
         }
-    }, [projectData, tagsAsString]);
+    }, [projectData]);
+    console.log("ProjectDATA: \n", projectData)
 
-    const { title, description, tags } = projectFormData;
+    const { title, description, tags, url } = projectFormData;
     const handleOnChange = (e) => {
         const { name, value } = e.target;
-        const newValue = name === 'tags' ? value.split(',').map(tag => tag.trim()) : value;
+        const newValue = value;
         setProjectFormData(prevData => ({
             ...prevData,
             [name]: newValue,
@@ -66,18 +55,13 @@ export default function EditProjectUtil() {
     const handleOnSubmit = (e) => {
         e.preventDefault()
 
-        const { title, description, projectFiles } = projectFormData;
-        let { tags } = projectFormData
-        if (typeof tags === 'string') {
-            tags = tags.split(',').map(tag => tag.trim());
-        }
-
+        const { title, description, tags, url, projectFiles } = projectFormData;
         dispatch(setProjectData({
-            title, description, tags, projectFiles: null
+            title, description, tags, url, projectFiles: null
         }));
 
         setLoading(!loading);
-        dispatch(editProject(projectId, title, description, tags, projectFiles, token, navigate));
+        dispatch(editProject(projectId, title, description, tags, url, projectFiles, token, navigate));
         setLoading(!loading);
         clearForm();
     }
@@ -151,10 +135,25 @@ export default function EditProjectUtil() {
                     </label>
                     <label>
                         <p className="mb-1 text-[0.875rem] text-left leading-[1.375rem] text-richblack-8">
-                            Upload Project Related Files <sup className="text-red-500 font-bold text-sm">*</sup>
+                            Project Github URL 
                         </p>
                         <input
-                            required
+                            type="text"
+                            name="url"
+                            value={url}
+                            onChange={handleOnChange}
+                            placeholder="Enter link for this project repository"
+                            style={{
+                                boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
+                            }}
+                            className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-8"
+                        />
+                    </label>
+                    <label>
+                        <p className="mb-1 text-[0.875rem] text-left leading-[1.375rem] text-richblack-8">
+                            Upload Project Related Files 
+                        </p>
+                        <input
                             type="file"
                             name="projectFiles"
                             onChange={handleFileChange}
@@ -164,8 +163,6 @@ export default function EditProjectUtil() {
                             multiple
                             className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-8"
                         />
-
-
                     </label>
 
                     <div className="flex gap-3 justify-center">

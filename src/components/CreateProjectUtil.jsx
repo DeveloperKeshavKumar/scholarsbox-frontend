@@ -13,7 +13,7 @@ export default function CreateProjectUtil() {
     const [projectFormData, setProjectFormData] = useState({
         title: "",
         description: "",
-        tags: [],
+        tags: "",
         projectFiles:null
     })
 
@@ -41,7 +41,7 @@ export default function CreateProjectUtil() {
         setProjectFormData({
             title: "",
             description: "",
-            tags: [],
+            tags: "",
             projectFiles:null
         })
     }
@@ -61,6 +61,7 @@ export default function CreateProjectUtil() {
     
         setLoading(!loading);
         // Send data for creation of project
+        console.log("Tags: ", tags)
         dispatch(createProject(title, description, tags, projectFiles, token, navigate));
         setLoading(!loading);
         // Reset
