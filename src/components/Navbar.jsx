@@ -15,7 +15,7 @@ export const Navbar = () => {
             {token === null ? (
                 <div className="mt-4 flex justify-evenly flex-wrap ">
                     <NavLink to="/" className="flex justify-center items-center mr-6 ">
-                        <img src={imgPath} alt="App Logo" className="w-[3rem]" />
+                        <img src={imgPath} alt="App Logo" className="w-[3rem] h-[3rem]" />
                         <p className="font-bold text-xl ">ScholarsBox</p>
                     </NavLink>
 
@@ -68,7 +68,7 @@ export const Navbar = () => {
                                 </div>
                             </li>
                             <li><NavLink to={'/user/' + user._id}>
-                                <img src={user.image} alt="profile pic" className=" w-[2rem] bg-blue-600 rounded-full  " />
+                                <img src={user.image} alt="profile pic" className=" w-[2rem] h-[2rem] bg-blue-600 rounded-full  " />
                             </NavLink></li>
                         </ul>
                     </div>
