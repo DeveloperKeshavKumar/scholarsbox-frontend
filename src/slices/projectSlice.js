@@ -7,8 +7,10 @@ const initialState = {
     title: "",
     description: "",
     tags: [],
+    url: '',
     projectFiles: null // Store file reference
-  }
+  },
+  allProjects: localStorage.getItem("allprojects") ? JSON.parse(localStorage.getItem("allprojects")) : null,
 };
 
 const projectSlice = createSlice({
@@ -19,11 +21,12 @@ const projectSlice = createSlice({
       state.loading = action.payload;
     },
     setProjectData: (state, action) => {
-      const { title, description, tags, projectFiles } = action.payload;
+      const { title, description, tags, url, projectFiles } = action.payload;
       state.projectData = {
         title,
         description,
         tags,
+        url,
         projectFiles: projectFiles ? projectFiles.name : null // Store file name as reference
       };
     },
@@ -34,6 +37,9 @@ const projectSlice = createSlice({
       state.loading = false;
       state.projectData = initialState.projectData;
       state.editProject = false;
+    },
+    setAllProjects: (state, action) => {
+      state.allProjects = action.payload;
     }
   },
 });
@@ -42,7 +48,8 @@ export const {
   setLoading,
   setProjectData,
   setEditProject,
-  resetProjectState
+  resetProjectState,
+  setAllProjects,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

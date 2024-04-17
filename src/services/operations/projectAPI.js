@@ -1,7 +1,7 @@
 import { toast } from "react-hot-toast"
 import { apiConnector } from "../apiConnector"
 import { projectEndpoints, endpoints } from "../apis"
-import { resetProjectState, setLoading } from "../../slices/projectSlice"
+import { resetProjectState, setAllProjects, setLoading, setProjectData } from "../../slices/projectSlice"
 import { setUser } from "../../slices/profileSlice"
 
 const { CREATE_PROJECT_API, GET_USER_PROJECTS_API } = projectEndpoints
@@ -62,10 +62,10 @@ export async function getLikes(token, projectID) {
         const response = await apiConnector("GET", url, null, {
             Authorization: `Bearer ${token.token}`
         });
-        return response.data.data;
-
+        console.log("ProjectAPI LikeCount: ", response?.data?.totalLikes);
+        return { getLike: response.data.data, totalLikes: response.data.totalLikes };
     } catch (err) {
-        console.error(err)
+        console.error(err);
     }
 }
 
@@ -118,15 +118,17 @@ export async function deleteProject(token, projectID, navigate, dispatch) {
 
 }
 
-export function editProject(projectID, title, description, tags, projectFiles, token, navigate) {
+export function editProject(projectID, title, description, tags, giturl, projectFiles, token, navigate) {
     return async (dispatch) => {
         const toastId = toast.loading("Loading...");
         dispatch(setLoading(true));
         try {
+            console.log("TAGS IN EDIT PROJECT API", JSON.stringify(tags))
             const formData = new FormData();
             formData.append('title', title);
             formData.append('description', description);
             formData.append('tags', JSON.stringify(tags));
+            formData.append('url', giturl);
             if (projectFiles && projectFiles.length > 0) {
                 for (let i = 0; i < projectFiles.length; i++) {
                     formData.append(projectFiles[i], projectFiles[i])
@@ -141,6 +143,8 @@ export function editProject(projectID, title, description, tags, projectFiles, t
             if (!response.data.success) {
                 throw new Error(response.data.message);
             }
+            console.log("RESPONSE FROM EDIT PROJECT: \n",response.data.project)
+            dispatch(setProjectData(response.data.project))
             toast.success("Project Updated Successfully");
             response = await apiConnector("GET", USER_API, null, {
                 Authorization: `Bearer ${token.token}`
@@ -155,4 +159,28 @@ export function editProject(projectID, title, description, tags, projectFiles, t
         dispatch(setLoading(false));
         toast.dismiss(toastId);
     };
+}
+
+export function getAllProjects() {
+    return async (dispatch) => {
+        const toastId = toast.loading("Loading...")
+        dispatch(setLoading(true))
+        try {
+            const response = await apiConnector("GET", GET_USER_PROJECTS_API, null, null)
+
+            console.log("GET ALL PROJECTS RESPONSE ....................", response.data.data);
+
+            if (!response.data.success) {
+                throw new Error(response.data.message)
+            }
+            localStorage.setItem('allprojects', JSON.stringify(response.data.data))
+
+            dispatch(setAllProjects({ ...response.data.data }))
+        } catch (err) {
+            console.log("GET ALL PROJECTS API ERROR ..................", err)
+            toast.error("Error fetching all projects")
+        }
+        toast.dismiss(toastId)
+        dispatch(setLoading(false))
+    }
 }
