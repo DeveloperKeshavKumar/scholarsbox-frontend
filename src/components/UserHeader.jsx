@@ -21,7 +21,7 @@ export default function UserHeader({user, userId}) {
     return (
         <div className="mt-10 w-11/12 max-w-5xl mx-auto flex gap-y-4 lg:flex-row lg:gap-0 md:gap-0 md:flex-row flex-col items-center justify-between">
             <div className="flex items-center flex-col gap-3 md:flex-row lg:flex-row">
-                <img src={user?.image} alt="profile pic" className="w-[150px] rounded-full bg-red-300" />
+                <img src={user?.image} alt="profile pic" className="w-[150px] h-[150px] rounded-full bg-red-300" />
                 <div className="profileDetails lg:text-left md:text-left ml-3 ">
                     {/* Fetched from API later */}
                     <h1 className="text-[20px] font-semibold">{user.firstName + " " + user.lastName}</h1>
