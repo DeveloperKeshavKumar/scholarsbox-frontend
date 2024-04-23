@@ -12,13 +12,13 @@ export default function UserOverview({ user }) {
             <div className="lg:ml-5 md:ml-5">
                 <div className="mt-5">
                     <h2 className="text-[20px] font-semibold md:text-left lg:text-left mb-2">Bio</h2>
-                    <p className="text-justify lg:ml-5 md:ml-5 text-gray-800">
+                    <p className=" lg:ml-5 md:ml-5 text-gray-800">
                         {user?.bio ? user.bio : "Enter your bio in edit profile"}
                     </p>
                 </div>
                 <div className="mt-5">
                     <h2 className="text-[20px] font-semibold md:text-left lg:text-left mb-2">Goals</h2>
-                    {user && user.goals && user.goals.length > 0 ? (
+                    {user && user.goals && user.goals.length > 1 ? (
                         <ul className="list-disc text-left lg:ml-9 md:ml-9 text-gray-800 ml-4">
                             {user.goals.map((goal, index) => (
                                 <li key={index} className=" list-disc">{goal}</li>
@@ -35,7 +35,7 @@ export default function UserOverview({ user }) {
                 <div className="h-[3px] w-full rounded-md bg-black mt-1"></div>
             </div>
             <div className="mt-5">
-                {projects?.length > 0 ?
+                {projects?.length > 1 ?
                     projects.map((projectId, index) => (
                         <Link to={"/projects/" + projectId}>
                             <UserProjectCard key={index} projectId={projectId} />
@@ -52,7 +52,7 @@ export default function UserOverview({ user }) {
 
             <div className="mt-5 ">
                 <div className="ml-5">
-                    {user && user.achievements && user.achievements.length > 0 ? (
+                    {user && user.achievements && user.achievements.length > 1 ? (
                         <ul className="list-disc text-left lg:ml-9 md:ml-9 text-gray-800 ml-4">
                             {user.achievements.map((achievement, index) => (
                                 <li key={index} className=" list-disc">{achievement}</li>
