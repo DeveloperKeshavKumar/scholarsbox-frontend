@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:4000/api"
+const BASE_URL = "https://scholarsbox-backend.onrender.com/api"
+const LOCAL_URL = "http://localhost:4000/api"
 
 // AUTH ENDPOINTS
 export const endpoints = {
