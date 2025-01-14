@@ -4,6 +4,7 @@ import { AgGridReact } from 'ag-grid-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProjects } from '../services/operations/projectAPI';
+import {Link} from 'react-router-dom';
 
 export default function AllProjects() {
     const dispatch = useDispatch();
@@ -37,9 +38,9 @@ export default function AllProjects() {
             cellRenderer: (params) => {
                 const projectId = params.data._id;
                 return (
-                    <a href={`/projects/${projectId}`} target="_blank" rel="noreferrer noopener">
+                    <Link to={`/projects/${projectId}`} >
                         {params.value}
-                    </a>
+                    </Link>
                 );
             },
         },
